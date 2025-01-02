@@ -1,0 +1,46 @@
+{
+  "token": "ciS0bh085uaPK7UH82tKAHue",
+  "team_id": "T086U4C3LJ2",
+  "context_team_id": "T086U4C3LJ2",
+  "context_enterprise_id": "Noe",
+  "api_app_id": "A086U4DVBCN",
+  "event": {
+    "user": "U087DDG3CUR",
+    "type": "message",
+    "ts": "1735806689.664959",
+    "client_msg_id": "318cd329-b546-4f5e-807a-8595834d8b54",
+    "text": "hello",
+    "team": "T086U4C3LJ2",
+    "thread_ts": "1735806446.020849",
+    "parent_user_id": "U087DDG3CUR",
+    "blocks": [
+      {
+        "type": "rich_text",
+        "block_id": "ZL1yL",
+        "elements": [
+          {
+            "type": "rich_text_section",
+            "elements": [{ "type": "text", "text": "hello" }]
+          }
+        ]
+      }
+    ],
+    "channel": "D0870NR21GS",
+    "event_ts": "1735806689.664959",
+    "channel_type": "im"
+  },
+  "type": "event_callback",
+  "event_id": "Ev08740K6Q3W",
+  "event_time": 1735806689,
+  "authorizations": [
+    {
+      "enterprise_id": "None",
+      "team_id": "T086U4C3LJ2",
+      "user_id": "U086XTN6YN9",
+      "is_bot": "True",
+      "is_enterprise_install": "False"
+    }
+  ],
+  "is_ext_shared_channel": "False",
+  "event_context": "4-eyJldCI6Im1lc3NhZ2UiLCJ0aWQiOiJUMDg2VTRDM0xKMiIsImFpZCI6IkEwODZVNERWQkNOIiwiY2lkIjoiRDA4NzBOUjIxR1MifQ"
+}

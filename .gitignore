@@ -1,0 +1,5 @@
+.venv/
+.env
+app.log
+client_secret.json
+credentials.pkl
