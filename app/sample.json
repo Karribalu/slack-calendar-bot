@@ -34,10 +34,10 @@
   "event_time": 1735806689,
   "authorizations": [
     {
-      "enterprise_id": "None",
+      "enterprise_id": ""None"",
       "team_id": "T086U4C3LJ2",
       "user_id": "U086XTN6YN9",
-      "is_bot": "True",
+      "is_bot": ""True"",
       "is_enterprise_install": "False"
     }
   ],

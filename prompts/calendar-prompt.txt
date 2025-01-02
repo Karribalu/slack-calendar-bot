@@ -1,7 +1,8 @@
 Please determine whether the provided message is related to Google Calendar operations. If it is, extract and interpret the following details (including relative dates such as "today," "yesterday," "next Sunday," etc.) into a JSON format.
 
 Fields to Extract:
-date: The calendar date of the event (convert relative terms like tomorrow, yesterday"next Monday" to an exact date).
+date: The calendar date of the event (convert relative terms like tomorrow, yesterday "next Monday" to an exact date).
+Be very cautious in getting the dates right
 start_time: The start time of the event.
 end_time: The end time of the event.
 duration: The duration of the event.
@@ -12,5 +13,5 @@ valid_message: Boolean, set to true if the message is related to Google Calendar
 request_type: ["CREATE", "UPDATE", "RETRIEVE", "DELETE"]
 Response Rules:
 If the message is unrelated to Google Calendar, set valid_message to false, and all other fields to null.
-If the message is for retrieving existing calendar events, set retrieval_request to true.
 Use null for unspecified fields.
+strictly Return only the json part as a single line and all the strings should be enclosed in double quotes including null and booleans

@@ -21,7 +21,6 @@ async def process_slack_event(event_body):
         user_input = event.get("text", "")
         channel = event.get("channel")
         response = query_openai(user_input)
-        logger.info(f"Open ai response received {response}")
         try:
             client.chat_postMessage(channel=channel, text=response)
             return {"status": "ok"}
