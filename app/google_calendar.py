@@ -89,6 +89,52 @@ async def update_calender_event(event_details):
         return {"error": "Something wrong has occured while updating the event, Please try again later or contact the administrator"}
 
 
+async def get_calendar_events(event_details):
+    credentials = load_credentials()
+    if credentials is None:
+        return {"result": "User not authenticated"}
+
+    service = build("calendar", "v3", credentials=credentials)
+
+    # Convert the date to the start and end of the day in UTC
+    start_of_day = get_utc_date_time(
+        event_details["date"], event_details["start_time"])
+    end_of_day = get_utc_date_time(
+        event_details["date"], event_details["end_time"])
+
+    try:
+        # Fetch events for the specified date range
+        events_result = service.events().list(
+            calendarId="primary",
+            timeMin=start_of_day,
+            timeMax=end_of_day,
+            singleEvents=True,
+            orderBy="startTime"
+        ).execute()
+
+        events = events_result.get("items", [])
+        logger.info(
+            f"Found {len(events)} events on {event_details['date']} for retrieval")
+        # TODO: We can use AI here to filter the results more efficiently
+        # Extract relevant event details
+        markdown_table = f"Events on {event_details['date']}: \n"
+
+        for event in events:
+            title = event.get("summary", "No Title")
+            start_time = event["start"].get(
+                "dateTime", event["start"].get("date"))
+            end_time = event["end"].get("dateTime", event["end"].get("date"))
+            link = event.get("htmlLink", "N/A")
+            markdown_table += f" - {title} ({start_time} to {end_time})\n"
+            markdown_table += (f"   Link: {link}\n")
+
+        return {"result": markdown_table}
+
+    except Exception as e:
+        logger.error(f"Error fetching events: {str(e)}")
+        return {"error": f"Failed to fetch events: {str(e)}"}
+
+
 def get_utc_date_time(date, time):
 
     # Local date and time

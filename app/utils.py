@@ -2,7 +2,7 @@ import pytz
 import pickle
 import os
 import logging
-from app.google_calendar import create_calendar_event, update_calender_event
+from app.google_calendar import create_calendar_event, update_calender_event, get_calendar_events
 from google.oauth2.credentials import Credentials
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -51,6 +51,8 @@ async def query_openai(prompt):
         logger.info(f'{parsed_object} {type(parsed_object["valid_message"])}')
         return "Apologies, Please provide what can I help with you in adding, updating your google calendar"
     else:
+        parsed_object['start_time'] = '00:00'
+        parsed_object['end_time'] = '23:59'
         match parsed_object["request_type"]:
             case 'CREATE':
                 response = await create_calendar_event(parsed_object)
@@ -63,7 +65,8 @@ async def query_openai(prompt):
                     f"Received the response after updating the event {response}")
                 return response
             case 'RETRIEVE':
-                pass
+                response = await get_calendar_events(parsed_object)
+                return response
             case 'DELETE':
                 pass
 
