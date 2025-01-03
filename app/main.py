@@ -35,8 +35,8 @@ app.include_router(router)
 @app.on_event("startup")
 async def startup():
     app.state.db = await asyncpg.create_pool(**DATABASE_CONFIG)
-
-    await db_setup()
+    async with app.state.db.acquire() as conn:
+        await db_setup(conn)
 
 
 @app.on_event("shutdown")
@@ -52,7 +52,7 @@ async def root():
     # return {"message": "Chatbot Agent is running!"}
 
 
-async def db_setup():
-    create_query ='CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL)'
-    
+async def db_setup(conn):
+    create_secrets_query = 'CREATE TABLE IF NOT EXISTS client_secrets(id SERIAL PRIMARY KEY, user_id TEXT NOT NULL, secret TEXT, update_time TIMESTAMP)'
+    await conn.execute(create_secrets_query)
     pass

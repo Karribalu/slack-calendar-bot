@@ -50,11 +50,12 @@ def query_openai(prompt):
     else:
         match parsed_object["request_type"]:
             case 'CREATE':
-                created_link = create_calendar_event(parsed_object)
-                logger.info(f'Created the event with {create_event}')
-                return f'Created the event with {create_event}'
-                pass
+                response = create_calendar_event(parsed_object)
+                logger.info(
+                    f'Recieved the response after creating the event {response}')
+                return response
             case 'UPDATE':
+
                 pass
             case 'RETRIEVE':
                 pass
@@ -67,4 +68,3 @@ def query_openai(prompt):
 def create_event(payload):
 
     pass
-

@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 
 logger.info(f"SERVER_URL {URL}")
 
-
 def get_google_auth_url():
     flow = Flow.from_client_secrets_file(CLIENT_SECRETS_FILE, scopes=SCOPES)
     flow.redirect_uri = URL+"/auth/callback"
