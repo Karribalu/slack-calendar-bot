@@ -2,7 +2,7 @@ import pytz
 import pickle
 import os
 import logging
-from app.google_calendar import create_calendar_event
+from app.google_calendar import create_calendar_event, update_calender_event
 from google.oauth2.credentials import Credentials
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -14,7 +14,7 @@ client = OpenAI(api_key=str(openai_api_key))
 logger = logging.getLogger(__name__)
 
 
-def query_openai(prompt):
+async def query_openai(prompt):
     # We have to figure out the type of request first before processing
     enhanced_prompt = ""
     with open("./prompts/calendar-prompt.txt", "r") as f:
@@ -28,21 +28,24 @@ def query_openai(prompt):
         }
     ],
         model="gpt-4o")
-    chat_response = response.choices[0].message.content.strip()
+    chat_response = response.choices[0].message.content
     json_object = chat_response.replace("null", "None").replace("true", "True")
     parsed_object = eval(json_object)
+    logger.info(
+        f"Actual Chat response {chat_response} \n parsed response: {parsed_object}")
     """
-    {
-  "date": "2023-10-18",
-  "start_time": "09:00",
-  "end_time": "12:00",
-  "duration": "None",
-  "title": "my birthday",
-  "location": "hyderabad",
-  "description": "None",
-  "valid_message": "True",
-  "request_type": "CREATE"
-}
+    Sample Format
+            {
+        "date": "2023-10-18",
+        "start_time": "09:00",
+        "end_time": "12:00",
+        "duration": "None",
+        "title": "my birthday",
+        "location": "hyderabad",
+        "description": "None",
+        "valid_message": "True",
+        "request_type": "CREATE"
+        }
     """
     if ("valid_message" not in parsed_object or parsed_object["valid_message"] != True):
         logger.info(f'{parsed_object} {type(parsed_object["valid_message"])}')
@@ -50,13 +53,15 @@ def query_openai(prompt):
     else:
         match parsed_object["request_type"]:
             case 'CREATE':
-                response = create_calendar_event(parsed_object)
+                response = await create_calendar_event(parsed_object)
                 logger.info(
                     f'Recieved the response after creating the event {response}')
                 return response
             case 'UPDATE':
-
-                pass
+                response = await update_calender_event(parsed_object)
+                logger.info(
+                    f"Received the response after updating the event {response}")
+                return response
             case 'RETRIEVE':
                 pass
             case 'DELETE':

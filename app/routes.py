@@ -31,8 +31,8 @@ def auth_callback(code: str):
 
 
 @router.post("/calendar/event")
-def calendar_event(event_details: dict):
-    return create_calendar_event(event_details)
+async def calendar_event(event_details: dict):
+    return await create_calendar_event(event_details)
 
 
 @router.post("/slack/add-secrets")

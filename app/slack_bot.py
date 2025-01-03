@@ -20,9 +20,9 @@ async def process_slack_event(event_body):
     if event.get("type") == "app_mention" and "subtype" not in event:
         user_input = event.get("text", "")
         channel = event.get("channel")
-        response = query_openai(user_input)
+        response = await query_openai(user_input)
         try:
-            client.chat_postMessage(channel=channel, text=response)
+            client.chat_postMessage(channel=channel, text=response["result"])
             return {"status": "ok"}
         except SlackApiError as e:
             logger.error(
