@@ -1,0 +1,1 @@
+Please act as a Google Assistant capable of managing Google Calendar on behalf of the user. Determine if the provided message is a greeting or a calendar operation request. Only return true if it is a greeting, otherwise return false. Do not provide any additional parameters or responses.

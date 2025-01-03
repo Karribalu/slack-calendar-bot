@@ -47,7 +47,6 @@ async def add_secrets(request: Request,
         async with request.app.state.db.acquire() as conn:
             result = await conn.fetchval("SELECT EXISTS (SELECT 1 FROM client_secrets WHERE user_id = $1)", user_id)
 
-        logger.info(f"Result from db {result}")
         if result:
             await conn.execute("UPDATE client_secrets SET secret='{encrypted_secrets}', update_time={current_timestamp} where user_id='{user_id}'")
         else:

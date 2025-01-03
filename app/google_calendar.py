@@ -60,7 +60,6 @@ async def update_calender_event(event_details):
             orderBy="startTime"
         ).execute()
         events = events_result.get("items", [])
-        logger.info(f"Found {len(events)} events on {event_details['date']}")
         # Look for a matching event by title
         # TODO: We can use AI here to match the event more promptly instead of strict checking
 
@@ -74,7 +73,6 @@ async def update_calender_event(event_details):
             return {"result": "Event not found, Please verify your prompt"}
 
         event_id = matching_event["id"]
-        logger.info(f"Found matching event: {event_id}")
 
         start_time = get_utc_date_time(
             event_details["date"], event_details["start_time"])

@@ -8,7 +8,6 @@ logger = logging.getLogger(__name__)
 
 key = Fernet.generate_key()
 
-logger.info(f"KEY Generated {key}")
 cipher_suite = Fernet(key)
 
 

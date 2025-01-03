@@ -16,6 +16,22 @@ logger = logging.getLogger(__name__)
 
 async def query_openai(prompt):
     # We have to figure out the type of request first before processing
+    # Identify if the prompt is greetings prompty
+    greetings_prompt = ""
+    with open("./prompts/identify-greetings.txt", "r") as f:
+        greetings_prompt = f.read()
+    greetings_prompt = f"{greetings_prompt} \n message: {prompt}"
+    response = client.chat.completions.create(messages=[
+        {
+            "role": "user",
+            "content": greetings_prompt,
+        }
+    ],
+        model="gpt-4o")
+    chat_response = response.choices[0].message.content
+
+    if (chat_response == "true"):
+        return {"result": "Hello! I’m your virtual assistant here to help you manage your calendar effortlessly. How can I assist you today?"}
     enhanced_prompt = ""
     with open("./prompts/calendar-prompt.txt", "r") as f:
         enhanced_prompt = f.read()
@@ -48,7 +64,6 @@ async def query_openai(prompt):
         }
     """
     if ("valid_message" not in parsed_object or parsed_object["valid_message"] != True):
-        logger.info(f'{parsed_object} {type(parsed_object["valid_message"])}')
         return "Apologies, Please provide what can I help with you in adding, updating your google calendar"
     else:
         parsed_object['start_time'] = '00:00'
