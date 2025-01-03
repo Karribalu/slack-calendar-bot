@@ -1,7 +1,9 @@
 from googleapiclient.discovery import build
+from google.auth.exceptions import RefreshError
 import pickle
 import os
 from app.credential_utils import load_credentials
+from app.google_auth import get_google_auth_url
 from datetime import datetime
 import pytz
 import logging
@@ -11,31 +13,40 @@ logger = logging.getLogger(__name__)
 async def create_calendar_event(event_details):
     credentials = load_credentials()
     if credentials == None:
-        return {"result": "User not authenticated"}
-
+        google_auth_url = get_google_auth_url()
+        return {"result": f"Apologies, Your login creds might have expired, Please login to google using : {google_auth_url}"}
     service = build("calendar", "v3", credentials=credentials)
-    logger.info(f'Before {event_details}')
+
     start_time = get_utc_date_time(
         event_details["date"], event_details["start_time"])
     end_time = get_utc_date_time(
         event_details["date"], event_details["end_time"])
 
-    logger.info(f'{start_time} - {end_time}')
     event = {
         "summary": event_details["title"],
         "start": {"dateTime": start_time, "timeZone": "UTC"},
         "end": {"dateTime": end_time, "timeZone": "UTC"},
     }
-    created_event = service.events().insert(
-        calendarId="primary", body=event).execute()
+    try:
+        created_event = service.events().insert(
+            calendarId="primary", body=event).execute()
+    except RefreshError as e:
+        google_auth_url = get_google_auth_url()
+        return {"result": f"Apologies, Your login creds might have expired, Please login to google using : {google_auth_url}"}
+    except Exception as e:
+        logger.error(
+            f"Something wrong has occured while creating the event {e}")
+        return {"result": "Something wrong has occured while updating the event, Please try again later or contact the administrator"}
     return {"result": f"Created the event with URL: {created_event.get('htmlLink')}"}
 
 
 async def update_calender_event(event_details):
     credentials = load_credentials()
     if credentials == None:
-        return {"result": "User not authenticated"}
+        google_auth_url = get_google_auth_url()
+        return {"result": f"Apologies, Your login creds might have expired, Please login to google using : {google_auth_url}"}
     service = build("calendar", "v3", credentials=credentials)
+
     start_of_day = get_utc_date_time(
         event_details["date"], "00:00")
     end_of_day = get_utc_date_time(
@@ -83,18 +94,25 @@ async def update_calender_event(event_details):
         ).execute()
 
         return {"result": f"Updated the event with the given info URL: {updated_event_result.get('htmlLink')}"}
+    except RefreshError as e:
+        google_auth_url = get_google_auth_url()
+        return {"result": f"Apologies, Your login creds might have expired, Please login to google using : {google_auth_url}"}
     except Exception as e:
         logger.error(
             f"Something wrong has occured while updating the event {e}")
-        return {"error": "Something wrong has occured while updating the event, Please try again later or contact the administrator"}
+        return {"result": "Something wrong has occured while updating the event, Please try again later or contact the administrator"}
 
 
 async def get_calendar_events(event_details):
     credentials = load_credentials()
-    if credentials is None:
-        return {"result": "User not authenticated"}
-
+    if credentials == None:
+        google_auth_url = get_google_auth_url()
+        return {"result": f"Apologies, Your login creds might have expired, Please login to google using : {google_auth_url}"}
     service = build("calendar", "v3", credentials=credentials)
+    try:
+        google_auth_url = get_google_auth_url()
+    except Exception as e:
+        return {"result": f"Apologies, Your login creds might have expired, Please login to google using : {google_auth_url}"}
 
     # Convert the date to the start and end of the day in UTC
     start_of_day = get_utc_date_time(
@@ -129,10 +147,12 @@ async def get_calendar_events(event_details):
             markdown_table += (f"   Link: {link}\n")
 
         return {"result": markdown_table}
-
+    except RefreshError as e:
+        google_auth_url = get_google_auth_url()
+        return {"result": f"Apologies, Your login creds might have expired, Please login to google using : {google_auth_url}"}
     except Exception as e:
-        logger.error(f"Error fetching events: {str(e)}")
-        return {"error": f"Failed to fetch events: {str(e)}"}
+        logger.error(f"Error fetching events: {type(e)}")
+        return {"result": f"Failed to fetch events: {str(e)}"}
 
 
 def get_utc_date_time(date, time):

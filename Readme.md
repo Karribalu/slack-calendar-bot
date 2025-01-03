@@ -72,6 +72,7 @@ ngrok http http://127.0.0.1:8000
    - Create a new app with your workspace.
 
 2. Enable OAuth & Permissions:
+
    - Add bot as a scope under OAuth & Permissions.
    - Configure the Redirect URI (e.g., https://116c-2406-b400-33-5b8e-482-1dc0-459f-8b66.ngrok-free.app/auth/google).
 
@@ -80,3 +81,13 @@ ngrok http http://127.0.0.1:8000
 4. Set Slash Commands:
    - Define commands (e.g., /add-secrets) in the Slack app dashboard.
    - Use <your-host>/slack/add-secrets
+
+### 7. Environment Configuration
+
+```env
+SLACK_BOT_TOKEN= <SLACK-OAUTH>
+OPENAI_API_KEY=
+SERVER_URL= <RANDOM-URL-GENERATED-USING-NGROK>
+DATABASE_URL='postgresql://<owner>:<password>@<workspace>.us-east-2.aws.neon.tech/<db_name>?sslmode=require'
+SECRET_KEY=<any-secret-for-encryption-and-decryption>
+```

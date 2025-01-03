@@ -26,4 +26,4 @@ def google_auth_callback(code):
     flow.fetch_token(code=code)
     credentials = flow.credentials
     store_credentials(credentials)
-    return {"message": "Google Authentication Successful"}
+    return {"message": "Google Authentication Successful, Please close the tab"}
