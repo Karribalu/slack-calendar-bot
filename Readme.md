@@ -5,6 +5,7 @@ This Slack Calendar Bot integrates Slack and Google Calendar, allowing users to 
 ## Features
 
 - **Google Calendar Integration**: Create and view events in your Google Calendar.
+- **Slack Chat**: User can interact with bot by mentioning in the chat and use natural laguage.
 - **Slack Commands**: Interact with the bot using slash commands in Slack.
 - **Authentication**: Securely authenticate via Slack OAuth and Google OAuth.
 
@@ -81,6 +82,8 @@ ngrok http http://127.0.0.1:8000
 4. Set Slash Commands:
    - Define commands (e.g., /add-secrets) in the Slack app dashboard.
    - Use <your-host>/slack/add-secrets
+5. Create a channel to identify the calender-app and add the slack app to it.
+6. We can use the channel created to mention the bot and request the things to do.
 
 ### 7. Environment Configuration
 
@@ -91,3 +94,11 @@ SERVER_URL= <RANDOM-URL-GENERATED-USING-NGROK>
 DATABASE_URL='postgresql://<owner>:<password>@<workspace>.us-east-2.aws.neon.tech/<db_name>?sslmode=require'
 SECRET_KEY=<any-secret-for-encryption-and-decryption>
 ```
+
+### 8. Future Enhancements
+
+1. Currently we still not have a way to get the user's secrets, Added an API which needs work.
+2. The Authentication refresh should be done by user, Slack will prompt whenever it expires!
+3. We can use postgreSQL for storing the auth token instead of in a file called credentials.pkl.
+4. Slack is calling the api twice everytime bot is mentioned, We can use some type of fallback to identify if the request is already served.
+5. We can use AI more to filter the calender API results more naturally instead of strict matching.
